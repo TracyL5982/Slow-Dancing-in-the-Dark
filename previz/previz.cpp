@@ -51,6 +51,10 @@ float z_max;
 double cameraOffset;
 int camera_y_count;
 
+int hello;
+
+VEC3 figureLocation;
+
 // scene geometry
 vector<Primitive *> primitives;
 
@@ -233,6 +237,10 @@ void buildClouds(){
   primitives.push_back(s4);
 }
 
+void getFigureLocation(){
+  
+
+}
 void buildFigure(){
   displayer.ComputeBonePositions(DisplaySkeleton::BONES_AND_LOCAL_FRAMES);
   // retrieve all the bones of the skeleton
@@ -243,6 +251,11 @@ void buildFigure(){
 
   vector<Primitive *> sticks;
   int totalBones = rotations.size();
+
+  int leftLowestIndex = 0;
+  int rightLowestIndex = 0;
+  VEC3 leftLowest (10,10,10);
+  VEC3 rightLowest (10,10,10);
 
   for (int x = 1; x < totalBones; x++)
   {
@@ -265,6 +278,22 @@ void buildFigure(){
 
     leftVertex = rotation * scaling * leftVertex + translation;
     rightVertex = rotation * scaling * rightVertex + translation;
+
+    if(x == 5){
+      figureLocation = rightVertex.head<3>();
+    }
+
+    // if (hello == 0){
+    //   if (leftVertex[1] < leftLowest[1]){
+    //     leftLowest = leftVertex.head<3>();
+    //     leftLowestIndex = x;
+    //   }
+    //   if(rightVertex[1] < rightLowest[1]){
+    //     rightLowest = rightVertex.head<3>();
+    //     rightLowestIndex = x;
+    //   }
+    // }
+
     vector<VEC3> c_ends;
     c_ends.push_back(leftVertex.head<3>());
     c_ends.push_back(rightVertex.head<3>());
@@ -275,43 +304,23 @@ void buildFigure(){
     sticks.push_back(cylin);
   }
 
+  // if(hello == 0){
+  //   cout << "lowest left: "<< endl;
+  //   cout << leftLowestIndex << endl;
+  //   cout << leftLowest << endl;
+  //   cout << "lowest right: "<< endl;
+  //   cout << rightLowestIndex << endl;
+  //   cout << rightLowest << endl;
+  // }
+
+  hello += 1;
+
 }
-void buildScene(float frame_num)
-{
-  primitives.clear();
-  buildClouds();
-  buildFigure();
-  buildGround();
-  for(Model m : models){
-    m.addToScene (frame_num);
-  }
-//   cout << "y_min: "<< y_min << endl;
-}
 
-//////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char** argv)
-{
-  cameraOffset = -2;
-  camera_y_count = 0;
-  string skeletonFilename("02.asf");
-  string motionFilename("55_01.amc");
-  y_min = FLT_MAX;
-
-  // load up skeleton stuff
-  skeleton = new Skeleton(skeletonFilename.c_str(), MOCAP_SCALE);
-  skeleton->setBasePosture();
-  displayer.LoadSkeleton(skeleton);
-
-  // load up the motion
-  motion = new Motion(motionFilename.c_str(), MOCAP_SCALE, skeleton);
-  displayer.LoadMotion(motion);
-  skeleton->setPosture(*(displayer.GetSkeletonMotion(0)->GetPosture(0)));
-
-
+void buildCubes(){
   // load model
   float radius = 3.0;
-  VEC3 spiralCenter (0, 0, -1);
+  VEC3 spiralCenter = figureLocation;
   for(int i = 0; i < 6; i++){
     for(int j = 0; j < 6; j++){
       float angle = i * PI/6 + j * PI/8;
@@ -334,6 +343,40 @@ int main(int argc, char** argv)
       models.push_back(test);
     }
   }
+  for(Model m : models){
+    m.addToScene (frame_num);
+  }
+}
+void buildScene(float frame_num)
+{
+  primitives.clear();
+  // buildClouds();
+  buildFigure();
+  buildGround();
+  buildCubes();
+//   cout << "y_min: "<< y_min << endl;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+int main(int argc, char** argv)
+{
+  hello = 0;
+  cameraOffset = -2;
+  camera_y_count = 0;
+  string skeletonFilename("02.asf");
+  string motionFilename("55_01.amc");
+  y_min = FLT_MAX;
+
+  // load up skeleton stuff
+  skeleton = new Skeleton(skeletonFilename.c_str(), MOCAP_SCALE);
+  skeleton->setBasePosture();
+  displayer.LoadSkeleton(skeleton);
+
+  // load up the motion
+  motion = new Motion(motionFilename.c_str(), MOCAP_SCALE, skeleton);
+  displayer.LoadMotion(motion);
+  skeleton->setPosture(*(displayer.GetSkeletonMotion(0)->GetPosture(0)));
 
   // Note we're going 6 frames at a time, otherwise the animation
   // is really slow.
