@@ -308,19 +308,32 @@ int main(int argc, char** argv)
   displayer.LoadMotion(motion);
   skeleton->setPosture(*(displayer.GetSkeletonMotion(0)->GetPosture(0)));
 
+
   // load model
-  Model test;
-  test.Load("resources/test.stl");
-  test.setColor(VEC3(1,1,0));
-  test.setPosKeys({0, 450, 900, 1350, 1800},
-                  {VEC3(0,0,-2), VEC3(2,1,0), VEC3(0,2,2), VEC3(-2,1,0), VEC3(0,0,-2)},
-                  {0,0,0,0,0});
-  test.setScaleKeys({0},{VEC3(.01, .01, .01)}, {0});
-  test.setRotKeys({0, 450, 900, 1350, 1800},
-                  {VEC3(-PI/2.0,0,0), VEC3(-PI/2.0,0,0), VEC3(-PI/2.0,0,0), VEC3(-PI/2.0,0,0), VEC3(-PI/2.0,0,0)},
-                  {0, 0, 0, 0, 0});
-  test.setActiveKeys({0,1800}, {1, 1});
-  models.push_back(test);
+  float radius = 3.0;
+  VEC3 spiralCenter (0, 0, -1);
+  for(int i = 0; i < 6; i++){
+    for(int j = 0; j < 6; j++){
+      float angle = i * PI/6 + j * PI/8;
+      Model test;
+      test.Load("resources/test1.stl");
+      test.setColor(VEC3(1,1,0));
+      double y_incre = 0.5 * i;
+      double x_incre = sin(angle) * radius;
+      double z_incre = cos(angle) * radius;
+      VEC3 incre (x_incre, y_incre, z_incre);
+      test.setPosKeys({0, 225, 450, 675, 900, 1125, 1350, 1575, 1800},
+                      {VEC3(0,0,-4)+incre, VEC3(2,1,0)+incre, VEC3(0,2,2)+incre, VEC3(-2,1,0)+incre, VEC3(0,0,-4)+incre,
+                      VEC3(2,1,0)+incre, VEC3(0,2,2)+incre, VEC3(-2,1,0)+incre, VEC3(0,0,-4)+incre},
+                      {0,0,0,0,0});
+      test.setScaleKeys({0},{VEC3(.0002, .0002, .0002)}, {0});
+      test.setRotKeys({0, 450, 900, 1350, 1800},
+                      {VEC3(-PI/2.0,0,0), VEC3(-PI/2.0,0,0), VEC3(-PI/2.0,0,0), VEC3(-PI/2.0,0,0), VEC3(-PI/2.0,0,0)},
+                      {0, 0, 0, 0, 0});
+      test.setActiveKeys({0,1800}, {1, 1});
+      models.push_back(test);
+    }
+  }
 
   // Note we're going 6 frames at a time, otherwise the animation
   // is really slow.
