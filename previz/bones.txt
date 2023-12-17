@@ -1,6 +1,0 @@
-lowest left: 
-index = 5
-VEC3 (1.03515, 0.0507126, -1.29001)
-lowest right: 
-index = 5
-VEC3 (0.987694, 0.0206927, -1.32609)

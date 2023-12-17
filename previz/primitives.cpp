@@ -433,45 +433,45 @@ BoundingBox * getBoundingBox(vector<Primitive *> prims){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// class Light{
-// 	VEC3 pos;
-// 	VEC3 color;
-// public:
-// 	virtual bool isVisible(Ray &r, vector<Primitive *> scene, vector<BoundingBox *> bounders, VEC3 &color) = 0;
-// 	virtual float getIntensity(VEC3 point) = 0;
-// 	void setPos(VEC3 pos_in){pos = pos_in;}
-// 	VEC3 getPos(){return pos;}
-// 	void setColor(VEC3 color_in){color = color_in;}
-// 	VEC3 getColor(){return color;}
-// };
+class Light{
+	VEC3 pos;
+	VEC3 color;
+public:
+	// virtual bool isVisible(Ray &r, vector<Primitive *> scene, vector<BoundingBox *> bounders, VEC3 &color) = 0;
+	virtual float getIntensity(VEC3 point) = 0;
+	void setPos(VEC3 pos_in){pos = pos_in;}
+	VEC3 getPos(){return pos;}
+	void setColor(VEC3 color_in){color = color_in;}
+	VEC3 getColor(){return color;}
+};
 
-// class PointLight: public Light{
-// public:
-// 	PointLight(VEC3 pos_in, VEC3 color_in){
-// 		setPos(pos_in);
-// 		setColor(color_in);
-// 	}
+class PointLight: public Light{
+public:
+	PointLight(VEC3 pos_in, VEC3 color_in){
+		setPos(pos_in);
+		setColor(color_in);
+	}
 
-// 	// bool isVisible(Ray &shadow, vector<Primitive *> scene, vector<BoundingBox *> bounders, VEC3 &color_in){
-// 	// 	for(Primitive * p : scene){
-// 	// 		float t;
-// 	// 		VEC3 thisNorm;
-// 	// 		if(p->castsShadows() && p->intersectRay(shadow, t, thisNorm))
-// 	// 			return false;
-// 	// 	}
-// 	// 	color_in = getColor();
-// 	// 	return true;
-// 	// }
+	// bool isVisible(Ray &shadow, vector<Primitive *> scene, vector<BoundingBox *> bounders, VEC3 &color_in){
+	// 	for(Primitive * p : scene){
+	// 		float t;
+	// 		VEC3 thisNorm;
+	// 		if(p->castsShadows() && p->intersectRay(shadow, t, thisNorm))
+	// 			return false;
+	// 	}
+	// 	color_in = getColor();
+	// 	return true;
+	// }
 
-// 	float getIntensity(VEC3 point){
-// 		float dist = (getPos() - point).norm();
-// 		if(dist > .5){
-// 			return 0;
-// 		}else{
-// 			return 1.0f - dist*2;
-// 		}
-// 	}
-// };
+	float getIntensity(VEC3 point){
+		float dist = (getPos() - point).norm();
+		if(dist > .5){
+			return 0;
+		}else{
+			return 1.0f - dist*2;
+		}
+	}
+};
 
 // class SpotLight: public Light{
 // 	VEC3 direction;

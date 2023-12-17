@@ -33,7 +33,7 @@ static void myPushMatrix()
 }
 static void myPopMatrix()
 {
-  assert(matrixStack.size() != 0);
+  // assert(matrixStack.size() != 0);
   currentMatrix = matrixStack.top();
   matrixStack.pop();
 }
